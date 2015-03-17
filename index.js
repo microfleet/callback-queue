@@ -16,7 +16,7 @@ var callbackQueue = {};
 var nulls = 0;
 
 // cache reference
-var nextTick = setImmediate || process.nextTick;
+var nextTick = typeof setImmediate === 'function' && setImmediate || process.nextTick;
 var isArray = Array.isArray;
 
 // null threshold
