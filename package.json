@@ -1,0 +1,33 @@
+{
+  "name": "callback-queue",
+  "version": "1.0.0",
+  "description": "Put your callbacks into queue to make sure that concurrent requests that you might want to perform will only be executed once",
+  "main": "index.js",
+  "scripts": {
+    "test": "multi='spec=- xunit=test-report.xml' ./node_modules/.bin/mocha -R mocha-multi ./test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/AVVS/callback-queue.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AVVS/callback-queue/issues"
+  },
+  "keywords": [
+    "queue",
+    "callback",
+    "http",
+    "request"
+  ],
+  "author": "Vitaly Aminev <v@aminev.me>",
+  "license": "MIT",
+  "dependencies": {
+    "lodash.omit": "^3.0.0",
+    "lodash.once": "^3.0.0"
+  },
+  "devDependencies": {
+    "chai": "^2.1.2",
+    "mocha": "^2.2.1",
+    "mocha-multi": "^0.6.0"
+  }
+}
