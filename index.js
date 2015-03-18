@@ -42,7 +42,9 @@ function cleanup(key) {
  */
 function iterateOverCallbacks(bucket, args) {
     bucket.forEach(function iterator(callback) {
-        nextTick.apply(null, [callback].concat(args));
+        nextTick(function queuedCallback() {
+            callback.apply(null, args);
+        });
     });
 }
 
