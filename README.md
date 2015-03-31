@@ -1,5 +1,7 @@
 # Callback queue
 
+[![Codacy Badge](https://www.codacy.com/project/badge/a8696114e713425083cdd7cd2d44db34)](https://www.codacy.com/app/v/callback-queue)
+
 Node.js callback queue. Can be used with browserify as well.
 
 Idea is to queue callbacks, when same function wants to be called at the same time
