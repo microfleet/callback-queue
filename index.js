@@ -1,7 +1,6 @@
 'use strict';
 
 var omit = require('lodash.omit');
-var once = require('lodash.once');
 
 /**
  * Callback queue
@@ -75,7 +74,7 @@ exports.add = function (key, callback) {
         return false;
     }
 
-    callbackQueue[key] = [callback];
+    bucket = callbackQueue[key] = [callback];
 
     /**
      * This is wrapped in once so that we might escape all sorts of shit-like code
@@ -83,9 +82,9 @@ exports.add = function (key, callback) {
      * twice, but for another request. If you are certain that your code lacks these
      * stupid mistakes - you are more than welcome to fork and remove this restriction
      */
-    return once(function queuedCallback() {
-        bucket = callbackQueue[key];
-        if (!isArray(bucket)) {
+    return function queuedCallback() {
+        if (!bucket || callbackQueue[key] !== bucket || !isArray(bucket)) {
+            bucket = null;
             return;
         }
 
@@ -97,7 +96,8 @@ exports.add = function (key, callback) {
 
         iterateOverCallbacks(bucket, args);
         cleanup(key);
-    });
+        bucket = null;
+    };
 
 };
 
