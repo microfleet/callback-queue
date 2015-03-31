@@ -75,19 +75,19 @@ exports.add = function (key, callback) {
         return false;
     }
 
-    bucket = callbackQueue[key] = [callback];
+    callbackQueue[key] = [callback];
 
-    /**
-     * This is wrapped in once so that we might escape all sorts of shit-like code
-     * where people forget to remove certain even listeners and callback can be called
-     * twice, but for another request. If you are certain that your code lacks these
-     * stupid mistakes - you are more than welcome to fork and remove this restriction
-     */
     return function queuedCallback() {
+        // its essential that we do not use any reference, because of garbabe collection
+        // when object reaches certain number of nullified values - its recreated using compactObject
+        // function. Therefore we need to grab a reference when callback needs to be invoked and not at
+        // other time
+        var callbacks = callbackQueue[key];
+
         debug('calling callback for key %s', key);
 
-        if (!bucket || callbackQueue[key] !== bucket || !isArray(bucket)) {
-            debug('Callbacks couldn\'t be invoked: ', bucket, callbackQueue[key] !== bucket);
+        if (!isArray(callbacks)) {
+            debug('Callbacks couldn\'t be invoked: ', callbacks);
             bucket = null;
             return;
         } else {
@@ -100,9 +100,8 @@ exports.add = function (key, callback) {
             args[i] = arguments[i];
         }
 
-        iterateOverCallbacks(bucket, args);
+        iterateOverCallbacks(callbacks, args);
         cleanup(key);
-        bucket = null;
     };
 
 };
