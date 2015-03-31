@@ -1,6 +1,6 @@
 {
   "name": "callback-queue",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Put your callbacks into queue to make sure that concurrent requests that you might want to perform will only be executed once",
   "main": "index.js",
   "scripts": {

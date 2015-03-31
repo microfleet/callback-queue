@@ -30,7 +30,7 @@ function cleanup(key) {
     callbackQueue[key] = null;
     if (++nulls > nullThreshold) {
         callbackQueue = omit(callbackQueue, function removeNulls(datum) {
-            return !!datum;
+            return datum === null;
         });
     }
 }
