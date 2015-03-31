@@ -1,6 +1,6 @@
 {
   "name": "callback-queue",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Put your callbacks into queue to make sure that concurrent requests that you might want to perform will only be executed once",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   "author": "Vitaly Aminev <v@aminev.me>",
   "license": "MIT",
   "dependencies": {
+    "debug": "^2.1.3",
     "lodash.omit": "^3.1.0"
   },
   "devDependencies": {

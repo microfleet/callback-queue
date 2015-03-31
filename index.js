@@ -1,6 +1,7 @@
 'use strict';
 
 var omit = require('lodash.omit');
+var debug = require('debug')('callback-queue');
 
 /**
  * Callback queue
@@ -83,9 +84,14 @@ exports.add = function (key, callback) {
      * stupid mistakes - you are more than welcome to fork and remove this restriction
      */
     return function queuedCallback() {
+        debug('calling callback for key %s', key);
+
         if (!bucket || callbackQueue[key] !== bucket || !isArray(bucket)) {
+            debug('Callbacks couldn\'t be invoked: ', bucket, callbackQueue[key] !== bucket);
             bucket = null;
             return;
+        } else {
+            debug('Invoked callback %s', key);
         }
 
         var len = arguments.length;
