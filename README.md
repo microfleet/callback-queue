@@ -15,36 +15,31 @@ One example would be conserving resources spent on outgoing http requests.
 2. `callbackQueue.remove(String, Error)`: calls queued callbacks with Error argument
 
 ```js
-var callbackQueue = require('callback-queue');
-var request = require('request');
+const callbackQueue = require('callback-queue');
+const request = require('request');
 
 function performOutgoingRequest(url, next) {
-    var callback = callbackQueue.add(url, next);
-    if (!callback) {
-        return;
-    }
+  const callback = callbackQueue.add(url, next);
+  if (!callback) {
+    return;
+  }
 
-    request(url, callback);
+  request(url, callback);
 }
 
-for (var i = 0; i < 100; i++) {
-
-    // request itself will be performed just once
-    performOutgoingRequest('https://google.com', function niceCallback(err, resp, body) {
-        // will be called 100 times
-    });
-
+for (let i = 0; i < 100; i++) {
+  // request itself will be performed just once
+  performOutgoingRequest('https://google.com', function niceCallback(err, resp, body) {
+    // will be called 100 times
+  });
 }
 
-for (var x = 0; x < 100; x++) {
-
-    // request itself will be performed just once
-    performOutgoingRequest('https://google.com', function niceCallback(err, resp, body) {
-        // will be called 100 times with Error object
-    });
-
+for (let x = 0; x < 100; x++) {
+  // request itself will be performed just once
+  performOutgoingRequest('https://google.com', function niceCallback(err, resp, body) {
+      // will be called 100 times with Error object
+  });
 }
 
 callbackQueue.remove('https://google.com', new Error('cancel it!'));
-
 ```
