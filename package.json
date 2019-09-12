@@ -1,6 +1,6 @@
 {
   "name": "callback-queue",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Put your callbacks into queue to make sure that concurrent requests that you might want to perform will only be executed once",
   "main": "./lib/callback-queue.js",
   "scripts": {
