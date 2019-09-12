@@ -6,8 +6,9 @@ const assert = require('assert');
  * @type {Map}
  */
 const callbackQueue = new Map();
+
 // cache reference
-const nextTick = typeof setImmediate === 'function' && setImmediate || process.nextTick;
+const nextTick = (typeof setImmediate === 'function' && setImmediate) || process.nextTick;
 
 /**
  * Iterates over callbacks and calls them with passed args
