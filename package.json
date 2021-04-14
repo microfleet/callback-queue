@@ -1,21 +1,22 @@
 {
-  "name": "callback-queue",
+  "name": "@microfleet/callback-queue",
   "version": "3.0.0",
   "description": "Put your callbacks into queue to make sure that concurrent requests that you might want to perform will only be executed once",
   "main": "./lib/callback-queue.js",
   "scripts": {
-    "test": "yarn lint && mocha -r @babel/register -R spec test",
+    "test": "yarn lint && mocha -r ts-node/register -R spec test/*.spec.ts",
     "lint": "eslint ./src",
-    "prepublishOnly": "yarn compile",
     "pretest": "yarn compile",
-    "compile": "babel -d ./lib src"
+    "compile": "tsc --build ./tsconfig.build.json",
+    "prepublishOnly": "yarn compile",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/AVVS/callback-queue.git"
+    "url": "git://github.com/microfleet/callback-queue.git"
   },
   "bugs": {
-    "url": "https://github.com/AVVS/callback-queue/issues"
+    "url": "https://github.com/microfleet/callback-queue/issues"
   },
   "keywords": [
     "queue",
@@ -29,22 +30,40 @@
     "debug": "^4.1.1"
   },
   "engine": {
-    "node": "^10.15.x"
+    "node": ">= 12.15.x"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-transform-strict-mode": "^7.2.0",
-    "@babel/register": "^7.0.0",
+    "@makeomatic/deploy": "^10.4.0",
+    "@types/bluebird": "^3.5.33",
+    "@types/debug": "^4.1.5",
+    "@types/ioredis": "^4.22.3",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.39",
+    "@types/sinon": "^10.0.0",
+    "@types/uuid": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
-    "eslint": "^6.3.0",
-    "eslint-config-makeomatic": "^3.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "mocha": "^6.2.0"
+    "cross-env": "^7.0.3",
+    "eslint": "^7.24.0",
+    "eslint-config-makeomatic": "^5.0.4",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-promise": "^5.1.0",
+    "ioredis": "^4.26.0",
+    "mocha": "^8.3.2",
+    "sinon": "^10.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
   },
   "files": [
     "src/",
     "lib/"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS",
+      "prepare-commit-msg": "./node_modules/@makeomatic/deploy/git-hooks/prepare-commit-msg $HUSKY_GIT_PARAMS"
+    }
+  }
 }

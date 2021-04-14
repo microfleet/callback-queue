@@ -1,24 +1,26 @@
-const debug = require('debug')('callback-queue');
-const assert = require('assert');
+import _debug = require('debug')
+import assert = require('assert')
+
+const debug = _debug('callback-queue')
 
 /**
  * Callback queue
- * @type {Map}
  */
-const callbackQueue = new Map();
+const callbackQueue = new Map<string, Set<Thunk>>()
 
 // cache reference
-const nextTick = (typeof setImmediate === 'function' && setImmediate) || process.nextTick;
+const nextTick = (typeof setImmediate === 'function' && setImmediate) || process.nextTick
+export type Thunk = (...args: unknown[]) => unknown
 
 /**
  * Iterates over callbacks and calls them with passed args
- * @param {Array} bucket
- * @param {Array} args
+ * @param bucket
+ * @param args
  */
-function iterateOverCallbacks(bucket, args) {
+function iterateOverCallbacks(bucket: Set<Thunk>, args: unknown[]) {
   // set iterator
   for (const thunk of bucket) {
-    nextTick(thunk, ...args);
+    nextTick(thunk, ...args)
   }
 }
 
@@ -33,36 +35,40 @@ function iterateOverCallbacks(bucket, args) {
  * @param {String}   key      - unique key, based on which requests are bucketed
  * @param {Function} callback - callback that should be added into requests queue
  */
-exports.add = function add(key, callback) {
-  assert.equal(typeof key, 'string', 'key must be a truthy string');
-  assert.ok(key, 'key must be a truthy string');
-  assert.equal(typeof callback, 'function', 'callback must be a function');
+export function add(key: string, callback: Thunk): Thunk | false {
+  assert.strictEqual(typeof key, 'string', 'key must be a truthy string')
+  assert.ok(key, 'key must be a truthy string')
+  assert.strictEqual(typeof callback, 'function', 'callback must be a function')
 
-  const bucket = callbackQueue.get(key);
+  const bucket = callbackQueue.get(key)
   if (bucket) {
-    bucket.add(callback);
-    return false;
+    bucket.add(callback)
+    return false
   }
 
   // push new set into queue
-  callbackQueue.set(key, new Set([callback]));
+  callbackQueue.set(key, new Set([callback]))
 
-  return function queuedCallback(...args) {
+  /**
+   * Returns forwarder function that needs to be invoked
+   * when data has been processed
+   */
+  return function forwarder(...args: unknown[]) {
     // its essential that we do not use any reference, because of GC
     // when object reaches certain number of nullified values - its recreated using compactObject
     // function. Therefore we need to grab a reference when callback needs to be invoked and not at
     // other time
-    const callbacks = callbackQueue.get(key);
+    const callbacks = callbackQueue.get(key)
     if (!callbacks) {
-      debug('Callbacks couldn\'t be invoked');
-      return null;
+      debug('Callbacks couldn\'t be invoked')
+      return null
     }
 
-    debug('calling callback for key %s', key);
-    callbackQueue.delete(key);
-    return iterateOverCallbacks(callbacks, args);
-  };
-};
+    debug('calling callback for key %s', key)
+    callbackQueue.delete(key)
+    return iterateOverCallbacks(callbacks, args)
+  }
+}
 
 /**
  * Call this if you are absolutely sure you need to abort the request
@@ -74,13 +80,13 @@ exports.add = function add(key, callback) {
  * @param  {String} key
  * @param  {Error}  error
  */
-exports.remove = function remove(key, error) {
-  const bucket = callbackQueue.get(key);
+export function remove(key: string, error: Error): void | false {
+  const bucket = callbackQueue.get(key)
   if (!bucket) {
-    return false;
+    return false
   }
 
-  assert.ok(error instanceof Error, 'you must pass an instance of Error object when canceling requests');
-  callbackQueue.delete(key);
-  return iterateOverCallbacks(bucket, [error]);
-};
+  assert.ok(error instanceof Error, 'you must pass an instance of Error object when canceling requests')
+  callbackQueue.delete(key)
+  return iterateOverCallbacks(bucket, [error])
+}
