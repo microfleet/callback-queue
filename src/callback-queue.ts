@@ -10,14 +10,14 @@ const callbackQueue = new Map<string, Set<Thunk>>()
 
 // cache reference
 const nextTick = (typeof setImmediate === 'function' && setImmediate) || process.nextTick
-export type Thunk = (...args: unknown[]) => unknown
+export type Thunk<T extends any[] = any[], R = any> = (...args: T) => R
 
 /**
  * Iterates over callbacks and calls them with passed args
  * @param bucket
  * @param args
  */
-function iterateOverCallbacks(bucket: Set<Thunk>, args: unknown[]) {
+function iterateOverCallbacks<T extends Thunk<U, R>, U extends any[] = any[], R = any>(bucket: Set<T>, args: U) {
   // set iterator
   for (const thunk of bucket) {
     nextTick(thunk, ...args)
@@ -35,7 +35,7 @@ function iterateOverCallbacks(bucket: Set<Thunk>, args: unknown[]) {
  * @param {String}   key      - unique key, based on which requests are bucketed
  * @param {Function} callback - callback that should be added into requests queue
  */
-export function add(key: string, callback: Thunk): Thunk | false {
+export function add<T extends any[] = any[], R = any, X extends Thunk<T, R> = Thunk<T, R>>(key: string, callback: X): Thunk | false {
   assert.strictEqual(typeof key, 'string', 'key must be a truthy string')
   assert.ok(key, 'key must be a truthy string')
   assert.strictEqual(typeof callback, 'function', 'callback must be a function')
@@ -53,7 +53,7 @@ export function add(key: string, callback: Thunk): Thunk | false {
    * Returns forwarder function that needs to be invoked
    * when data has been processed
    */
-  return function forwarder(...args: unknown[]) {
+  return function forwarder(...args: T): null | void {
     // its essential that we do not use any reference, because of GC
     // when object reaches certain number of nullified values - its recreated using compactObject
     // function. Therefore we need to grab a reference when callback needs to be invoked and not at
