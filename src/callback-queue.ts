@@ -35,7 +35,7 @@ function iterateOverCallbacks<T extends Thunk<U, R>, U extends any[] = any[], R 
  * @param {String}   key      - unique key, based on which requests are bucketed
  * @param {Function} callback - callback that should be added into requests queue
  */
-export function add<T extends any[] = any[], R = any, X extends Thunk<T, R> = Thunk<T, R>>(key: string, callback: X): Thunk | false {
+export function add<T extends any[] = any[], R = any, X extends Thunk<T, R> = Thunk<T, R>>(key: string, callback: X): Thunk<T, null | void> | false {
   assert.strictEqual(typeof key, 'string', 'key must be a truthy string')
   assert.ok(key, 'key must be a truthy string')
   assert.strictEqual(typeof callback, 'function', 'callback must be a function')
