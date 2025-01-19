@@ -15,11 +15,10 @@
     "access": "public"
   },
   "scripts": {
-    "test": "pnpm lint && mocha test/*.spec.ts",
+    "test": "pnpm lint && pnpm compile && mocha test/*.spec.ts",
     "lint": "eslint ./src",
-    "pretest": "pnpm compile",
     "compile": "tsc --build ./tsconfig.build.json",
-    "prepublishOnly": "yarn compile",
+    "prepublishOnly": "pnpm compile",
     "semantic-release": "semantic-release"
   },
   "repository": {
