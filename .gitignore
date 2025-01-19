@@ -6,6 +6,7 @@
 .project
 .settings
 .tmp
+*.tsbuildinfo
 
 # Ignore node stuff
 node_modules/

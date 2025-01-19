@@ -3,13 +3,21 @@
   "version": "3.0.0",
   "description": "Put your callbacks into queue to make sure that concurrent requests that you might want to perform will only be executed once",
   "main": "./lib/callback-queue.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./lib/callback-queue.js",
+      "default": "./lib/callback-queue.js",
+      "types": "./lib/callback-queue.d.ts"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "test": "yarn lint && mocha -r ts-node/register -R spec test/*.spec.ts",
+    "test": "pnpm lint && mocha test/*.spec.ts",
     "lint": "eslint ./src",
-    "pretest": "yarn compile",
+    "pretest": "pnpm compile",
     "compile": "tsc --build ./tsconfig.build.json",
     "prepublishOnly": "yarn compile",
     "semantic-release": "semantic-release"
@@ -30,41 +38,31 @@
   "author": "Vitaly Aminev <v@aminev.me>",
   "license": "MIT",
   "dependencies": {
-    "debug": "^4.1.1"
+    "debug": "^4.4.0"
   },
   "engine": {
-    "node": ">= 12.15.x"
+    "node": ">= 22.13.0"
   },
   "devDependencies": {
-    "@makeomatic/deploy": "^10.4.0",
-    "@types/bluebird": "^3.5.33",
-    "@types/debug": "^4.1.5",
-    "@types/ioredis": "^4.22.3",
-    "@types/mocha": "^8.2.2",
-    "@types/node": "^14.14.41",
-    "@types/sinon": "^10.0.0",
-    "@types/uuid": "^8.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "@typescript-eslint/parser": "^4.22.0",
+    "@makeomatic/deploy": "^13.1.0",
+    "@swc-node/register": "^1.10.9",
+    "@types/debug": "^4.1.12",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.7",
+    "@types/sinon": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.24.0",
-    "eslint-config-makeomatic": "^5.0.4",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-promise": "^5.1.0",
-    "ioredis": "^4.26.0",
-    "mocha": "^8.3.2",
-    "sinon": "^10.0.0",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "eslint": "^8.57.1",
+    "eslint-config-makeomatic": "^6.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-promise": "^7.2.1",
+    "mocha": "^11.0.1",
+    "sinon": "^19.0.2",
+    "typescript": "^5.7.3"
   },
   "files": [
     "src/",
     "lib/"
-  ],
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS",
-      "prepare-commit-msg": "./node_modules/@makeomatic/deploy/git-hooks/prepare-commit-msg $HUSKY_GIT_PARAMS"
-    }
-  }
+  ]
 }
