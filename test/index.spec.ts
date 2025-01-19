@@ -1,6 +1,6 @@
-import { strict as assert } from 'assert'
+import assert from 'node:assert/strict'
 import { spy as createSpy, SinonSpy } from 'sinon'
-import * as callbackQueue from '../src/callback-queue'
+import * as callbackQueue from '../src/callback-queue.js'
 
 describe('callback queue suite', () => {
   describe('add', () => {

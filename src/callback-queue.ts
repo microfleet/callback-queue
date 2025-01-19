@@ -1,5 +1,5 @@
-import _debug = require('debug')
-import assert = require('assert')
+import _debug from 'debug'
+import assert from 'node:assert'
 
 const debug = _debug('callback-queue')
 
@@ -9,7 +9,6 @@ const debug = _debug('callback-queue')
 const callbackQueue = new Map<string, Set<Thunk>>()
 
 // cache reference
-const nextTick = (typeof setImmediate === 'function' && setImmediate) || process.nextTick
 export type Thunk<T extends any[] = any[], R = any> = (...args: T) => R
 
 /**
@@ -20,7 +19,7 @@ export type Thunk<T extends any[] = any[], R = any> = (...args: T) => R
 function iterateOverCallbacks<T extends Thunk<U, R>, U extends any[] = any[], R = any>(bucket: Set<T>, args: U) {
   // set iterator
   for (const thunk of bucket) {
-    nextTick(thunk, ...args)
+    queueMicrotask(() => thunk(...args))
   }
 }
 
